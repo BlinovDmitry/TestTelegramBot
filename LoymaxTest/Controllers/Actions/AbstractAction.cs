@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LoymaxTest.Models;
+using System;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using Telegram.Bot.Types;
@@ -29,7 +30,7 @@ namespace LoymaxTest.Controllers.Actions
             if (MatchMessage(message, context))
             {                
                 await DoHandleMessageAsync(message, context);
-                context.StateRepository.ClearState(message.Chat.Id, message.From.Id);
+                await context.StateRepository.ClearStateAsync(message.Chat.Id, message.From.Id);
                 return true;
             }
             return false;

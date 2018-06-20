@@ -149,12 +149,17 @@
     <Compile Include="Migrations\201806141816260_initial.Designer.cs">
       <DependentUpon>201806141816260_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806192018593_v1.1.cs" />
+    <Compile Include="Migrations\201806192018593_v1.1.Designer.cs">
+      <DependentUpon>201806192018593_v1.1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Controllers\Actions\AbstractAction.cs" />
     <Compile Include="Controllers\Actions\DefaultActionListFactory.cs" />
     <Compile Include="Models\DbStateRepository.cs" />
     <Compile Include="Models\IStateRepository.cs" />
     <Compile Include="Models\IUserDataRepository.cs" />
+    <Compile Include="Models\State.cs" />
     <Compile Include="Models\UserData.cs" />
     <Compile Include="Controllers\Actions\ActionManager.cs" />
     <Compile Include="Controllers\Actions\PingAction.cs" />
@@ -193,6 +198,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201806141816260_initial.resx">
       <DependentUpon>201806141816260_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806192018593_v1.1.resx">
+      <DependentUpon>201806192018593_v1.1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

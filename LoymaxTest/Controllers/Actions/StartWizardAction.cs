@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 
 namespace LoymaxTest.Controllers.Actions
@@ -23,7 +24,7 @@ namespace LoymaxTest.Controllers.Actions
                     await ChainStart.ApplyStateAsync(message, context);
                 return true;
             }
-            else if (ChainStart != null && !context.StateRepository.IsStateEmpty(message.Chat.Id, message.From.Id)) 
+            else if (ChainStart != null && !(await context.StateRepository.GetStateAsync(message.Chat.Id, message.From.Id)).IsEmpty)
                 return await ChainStart.HandleMessageAsync(message, context);
             return false;
         }        

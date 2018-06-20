@@ -19,10 +19,10 @@ namespace LoymaxTest
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
-            container.RegisterType<LoymaxTestBotDbContext>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IUserDataRepository, DbUserDataRepository>(new ContainerControlledLifetimeManager());
-            container.RegisterType<IStateRepository, DbStateRepository>(new ContainerControlledLifetimeManager());
-            container.RegisterType<ITelegramBotClient, TelegramBotClient>(new ContainerControlledLifetimeManager(),
+            container.RegisterType<LoymaxTestBotDbContext>();
+            container.RegisterType<IUserDataRepository, DbUserDataRepository>();
+            container.RegisterType<IStateRepository, DbStateRepository>();
+            container.RegisterType<ITelegramBotClient, TelegramBotClient>(
                 new InjectionConstructor(WebConfigurationManager.AppSettings["botToken"], new InjectionParameter<HttpClient>(null)));         
             container.RegisterType<ActionManager>();
 #if DEBUG

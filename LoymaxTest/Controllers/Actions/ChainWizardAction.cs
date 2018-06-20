@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LoymaxTest.Models;
+using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -28,14 +29,16 @@ namespace LoymaxTest.Controllers.Actions
         protected ChainWizardAction NextChainAction { get; set; }
 
         public async Task ApplyStateAsync(Message message, IMessageContext context)
-        {
+        {            
             if (OnBeforeActionHandler == null || await OnBeforeActionHandler(message, context, this))
             {
-                context.StateRepository[message.Chat.Id, message.From.Id] = StateGuid;
+                var state = await context.StateRepository.GetStateAsync(message.Chat.Id, message.From.Id);
+                state.StateGuid = StateGuid;
+                context.StateRepository.SetState(message.Chat.Id, message.From.Id, state);
                 await ReplyToMessageAsync(message, context, Text);
             }
             else
-                context.StateRepository.ClearState(message.Chat.Id, message.From.Id);
+                await context.StateRepository.ClearStateAsync(message.Chat.Id, message.From.Id);            
         }
 
         public ChainWizardAction AddChainAction(ChainWizardAction chainAction)
@@ -49,17 +52,17 @@ namespace LoymaxTest.Controllers.Actions
         protected override bool MatchMessage(Message message, IMessageContext context)
         {
             return (message.Type == MessageType.Text) 
-                && context.StateRepository[message.Chat.Id, message.From.Id] == StateGuid;            
-        }             
-        
+                && (context.StateRepository.GetState(message.Chat.Id, message.From.Id).StateGuid == StateGuid);            
+        }        
+
         public override async Task<bool> HandleMessageAsync(Message message, IMessageContext context)
-        {
+        {            
             if (MatchMessage(message, context))
             {
                 if (await OnAfterActionHandler(message, context, this))
                 {
                     if (NextChainAction == null)
-                        context.StateRepository.ClearState(message.Chat.Id, message.From.Id);
+                        await context.StateRepository.ClearStateAsync(message.Chat.Id, message.From.Id);
                     else
                         await NextChainAction.ApplyStateAsync(message, context);                    
                 }
@@ -67,7 +70,7 @@ namespace LoymaxTest.Controllers.Actions
             }
             else if (NextChainAction != null)
                 return await NextChainAction.HandleMessageAsync(message, context);
-            return false;
+            return false;            
         }
     }
 }

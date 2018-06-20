@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
 namespace LoymaxTest.Models
 {
@@ -11,27 +11,53 @@ namespace LoymaxTest.Models
 
         protected LoymaxTestBotDbContext DbContext { get; }
 
-        public Guid this[long chatId, int userId]
+        public State ClearState(long chatId, int userId)
         {
-            get => DbContext.ChatStates.Find(chatId, userId)?.StateGuid ?? Guid.Empty;
-
-            set
-            {
-                var chatState = DbContext.ChatStates.Find(chatId, userId)
-                    ?? DbContext.ChatStates.Add(new ChatState(chatId, userId, value));
-                chatState.StateGuid = value;
-                DbContext.SaveChanges();
-            }
+            return SetState(chatId, userId, State.Empty);
         }
 
-        public bool IsStateEmpty(long chatId, int userId)
-        {
-            return this[chatId, userId] == Guid.Empty;
+        public async Task<State> ClearStateAsync(long chatId, int userId)
+        {            
+            return await SetStateAsync(chatId, userId, State.Empty);
         }
 
-        public void ClearState(long chatId, int userId)
+        public State GetState(long chatId, int userId)
         {
-            this[chatId, userId] = Guid.Empty;
+            var chatState = DbContext.ChatStates.Find(chatId, userId);
+            if (chatState == null)
+                return State.Empty;
+            else
+                return new State(chatState.StateGuid, chatState.AdditionalData);
+        }
+
+        public async Task<State> GetStateAsync(long chatId, int userId)
+        {
+            var chatState = await DbContext.ChatStates.FindAsync(chatId, userId);
+
+            if (chatState == null)
+                return State.Empty;
+            else
+                return new State(chatState.StateGuid, chatState.AdditionalData);
+        }
+
+        public State SetState(long chatId, int userId, State state)
+        {
+            var chatState = DbContext.ChatStates.Find(chatId, userId)
+                ?? DbContext.ChatStates.Add(new ChatState(chatId, userId, state.StateGuid, state.AdditionalData));
+            chatState.StateGuid = state.StateGuid;
+            chatState.AdditionalData = state.AdditionalData;
+            DbContext.SaveChanges();
+            return state;
+        }
+
+        public async Task<State> SetStateAsync(long chatId, int userId, State state)
+        {
+            var chatState = await DbContext.ChatStates.FindAsync(chatId, userId)
+                ?? DbContext.ChatStates.Add(new ChatState(chatId, userId, state.StateGuid, state.AdditionalData));
+            chatState.StateGuid = state.StateGuid;
+            chatState.AdditionalData = state.AdditionalData;
+            await DbContext.SaveChangesAsync();
+            return state;
         }
     }
 

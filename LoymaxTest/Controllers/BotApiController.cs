@@ -10,7 +10,9 @@ using Telegram.Bot.Types;
 namespace LoymaxTest.Controllers
 {
     public class BotApiController : ApiController, IMessageContext
-    {       
+    {
+        private const string tokenParamName = "token";
+
         private const string updateHookRoute = "api/v1/update";
                
         public BotApiController(IUserDataRepository userDataStorage, IStateRepository stateStorage, ITelegramBotClient telegramBotApiClient, ActionManager actionManager)
@@ -36,17 +38,17 @@ namespace LoymaxTest.Controllers
         public async static Task SetupWebHookAsync()
         {
             var telegramBotApiClient = new TelegramBotClient(BotToken);
-
             var botUrl = new Uri(BotHostUrl, updateHookRoute);
-                        
-            await telegramBotApiClient.SetWebhookAsync($"{botUrl.ToString()}?token={BotToken}");
+            await telegramBotApiClient.DeleteWebhookAsync();
+            await telegramBotApiClient.SetWebhookAsync($"{botUrl}?{tokenParamName}={BotToken}");
         }
 
         [Route(updateHookRoute)]        
-        [HttpPost]        
-        public async Task<IHttpActionResult> PostUpdate(string token, [FromBody] Update update)
+        [HttpPost]
+        [HttpGet]
+        public async Task<IHttpActionResult> PostUpdate([FromUri(Name=tokenParamName)] string token, [FromBody] Update update)
         {            
-            if ((update?.Message != null) && (token == WebConfigurationManager.AppSettings["botToken"]))
+            if ((update?.Message != null) && (token == BotToken))
                 await ActionManager.HandleMessageAsync(update.Message, this);
             return Ok();         
         }

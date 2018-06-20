@@ -22,10 +22,12 @@ namespace LoymaxTest.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int UserId { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
         public string MidName { get; set; }
-
+        
+        [Required]
         public string LastName { get; set; }
 
         public DateTime? BirthDate { get; set; }
