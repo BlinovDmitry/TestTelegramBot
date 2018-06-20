@@ -205,11 +205,38 @@ namespace Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, такую же, как Регистрация не удалась: {0}.
+        /// </summary>
+        internal static string RegisterActionExecuteValidationFail {
+            get {
+                return ResourceManager.GetString("RegisterActionExecuteValidationFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, такую же, как Неизвестная команда.
         /// </summary>
         internal static string UnknownActionExecure {
             get {
                 return ResourceManager.GetString("UnknownActionExecure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, такую же, как Не задана фамилия.
+        /// </summary>
+        internal static string UserDataValidationLastNameRequired {
+            get {
+                return ResourceManager.GetString("UserDataValidationLastNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, такую же, как Не задано имя.
+        /// </summary>
+        internal static string UserDataValidationNameRequired {
+            get {
+                return ResourceManager.GetString("UserDataValidationNameRequired", resourceCulture);
             }
         }
     }

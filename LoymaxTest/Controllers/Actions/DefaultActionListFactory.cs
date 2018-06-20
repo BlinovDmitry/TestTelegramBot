@@ -2,8 +2,10 @@
 using Resources;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
+using System.Linq;
 
 namespace LoymaxTest.Controllers.Actions
 {
@@ -83,11 +85,21 @@ namespace LoymaxTest.Controllers.Actions
 
                             var completedUserData = (await c.StateRepository.GetStateAsync(m.Chat.Id, m.From.Id)).AdditionalData as UserData;
                             if (completedUserData != null)
-                            {
+                            {                                
                                 c.UserDataRepository.Add(completedUserData);
-                                await c.UserDataRepository.SaveChangesAsync();
-                            }
-                            await a.ReplyToMessageAsync(m, c, LoymaxTestBotResources.RegisterActionExecuteOk);
+                                try
+                                {
+                                    await c.UserDataRepository.SaveChangesAsync();
+                                    await a.ReplyToMessageAsync(m, c, LoymaxTestBotResources.RegisterActionExecuteOk);                                    
+                                }
+                                catch (DbEntityValidationException e)
+                                {
+                                    var errors = e.EntityValidationErrors.SelectMany(v => v.ValidationErrors).Select(err => err.ErrorMessage);
+                                    var errorStr = string.Format(LoymaxTestBotResources.RegisterActionExecuteValidationFail, string.Join(", ", errors).ToLower());
+                                    await a.ReplyToMessageAsync(m, c, errorStr);
+                                }
+                                return true;
+                            }                                                        
                             return true;
                         }
                         else

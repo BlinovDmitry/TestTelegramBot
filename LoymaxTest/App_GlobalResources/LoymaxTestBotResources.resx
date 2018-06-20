@@ -181,8 +181,20 @@
     <value>Введите личные данные для регистрации</value>
     <comment>Заголовок начала регистрации пользователя</comment>
   </data>
+  <data name="RegisterActionExecuteValidationFail" xml:space="preserve">
+    <value>Регистрация не удалась: {0}</value>
+    <comment>Ошибка валидации регистрации</comment>
+  </data>
   <data name="UnknownActionExecure" xml:space="preserve">
     <value>Неизвестная команда</value>
     <comment>Ответ на неизветсную команду</comment>
+  </data>
+  <data name="UserDataValidationLastNameRequired" xml:space="preserve">
+    <value>Не задана фамилия</value>
+    <comment>Ошибка валидации фамилии пользователя</comment>
+  </data>
+  <data name="UserDataValidationNameRequired" xml:space="preserve">
+    <value>Не задано имя</value>
+    <comment>Ошибка валидации имени пользователя</comment>
   </data>
 </root>
